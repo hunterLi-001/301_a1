@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -113,14 +115,14 @@ fun RapidRecallApp() {
 fun MenuScreen(
     onSelectedOption: (Int) -> Unit,
     modifier: Modifier = Modifier
-
 ) {
     Column(
-        modifier = Modifier.padding(top =60.dp)
+        modifier = Modifier.padding(top =200.dp, start = 20.dp, end = 20.dp).fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Hello!",
-            fontSize = 40.sp,
+            text = "Welcome to Rapid Recall",
+            fontSize = 30.sp,
             lineHeight = 45.sp,
         )
         Column(
@@ -191,10 +193,10 @@ fun GameScreen(
         }
     }
     Column(
-        modifier = Modifier.padding(top = 60.dp).fillMaxSize()
+        modifier = Modifier.padding(top = 60.dp, start = 20.dp, end = 20.dp, bottom = 20.dp).fillMaxSize()
     ) {
         if (gameStage == GameStage.input) {
-            Text(text = "New Game Setup Mode", fontSize = 20.sp)
+            Text(text = "New Game Setup", fontSize = 40.sp)
             Spacer(modifier = Modifier.padding(10.dp))
 
             OutlinedTextField(
@@ -216,23 +218,29 @@ fun GameScreen(
                         gameStage = GameStage.display
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp)
             ) {
                 Text("Start Game")
             }
         } else if (gameStage == GameStage.display) {
-            Text(text = "Display the target sequence", fontSize = 20.sp)
+            Text(text = "Display the target sequence", fontSize = 30.sp)
             Spacer(modifier = Modifier.padding(10.dp))
 
             if (currentIndex < targetSequence.length) {
+                //indicate the current index of the target sequence
+                Text(
+                    text = "Current Index Is ${currentIndex +1} of ${targetSequence.length}",
+                    fontSize = 30.sp
+                )
+
                 Text(
                     text = targetSequence[currentIndex].toString(),
-                    fontSize = 40.sp
+                    fontSize = 60.sp
                 )
             }
         //else if  display
         } else if (gameStage == GameStage.recall) {
-            Text(text = "Recall the sequence", fontSize = 20.sp)
+            Text(text = "Recall the sequence", fontSize = 40.sp)
             Spacer(modifier = Modifier.padding(10.dp))
 
             OutlinedTextField(
@@ -286,16 +294,16 @@ fun ResultsScreen(
     Column(
         modifier = Modifier.padding(top = 60.dp).fillMaxSize()
     ) {
-        Text(text = "Results", fontSize = 20.sp)
+        Text(text = "Results", fontSize = 60.sp)
         Spacer(modifier = Modifier.padding(10.dp))
 
         if (attempt != null) {
-            Text(text = "Sequence Length: ${attempt.sequenceLength}")
-            Text(text = "User Response: ${attempt.response}")
-            Text(text = "Target Sequence: ${attempt.targetSequence}")
-            Text(text = "Is Correct: ${attempt.isCorrect}")
+            Text(text = "Sequence Length: ${attempt.sequenceLength}", fontSize = 30.sp)
+            Text(text = "User Response: ${attempt.response}", fontSize = 30.sp,lineHeight = 40.sp)
+            Text(text = "Target Sequence: ${attempt.targetSequence}", fontSize = 30.sp,lineHeight = 40.sp)
+            Text(text = "Is Correct: ${attempt.isCorrect}", fontSize = 30.sp)
         } else {
-            Text(text = "No attempt data available.")
+            Text(text = "No attempt data available.", fontSize = 30.sp)
         }
         Spacer(modifier = Modifier.padding(10.dp))
         Button(onClick = {onSelectedOption(1) }){
@@ -319,15 +327,15 @@ fun AttemptScreen(
     Column(
         modifier = Modifier.padding(top = 60.dp).fillMaxSize()
     ) {
-        Text(text = "Summary", fontSize = 20.sp)
+        Text(text = "Summary", fontSize = 60.sp)
         Spacer(modifier = Modifier.padding(10.dp))
 
         if (attempt != null) {
-            Text(text = "No. of Attempts: ${totalAttempts}")
-            Text(text = "No. of Correct Attempts: ${correctAttempts}")
-            Text(text = "Overall Accuracy: ${correctAttempts.toFloat() / totalAttempts.toFloat()}")
+            Text(text = "No. of Attempts: ${totalAttempts}", fontSize = 30.sp)
+            Text(text = "No. of Correct Attempts: ${correctAttempts}", fontSize = 30.sp)
+            Text(text = "Overall Accuracy: ${correctAttempts.toFloat() / totalAttempts.toFloat() * 100}%", fontSize = 30.sp)
         } else {
-            Text(text = "No summary data available.")
+            Text(text = "No summary data available.", fontSize = 30.sp)
         }
         Spacer(modifier = Modifier.padding(10.dp))
         Button(onClick = {onSelectedOption(1) }){
@@ -349,25 +357,26 @@ fun LoggingScreen(
     Column(
         modifier = Modifier.padding(top = 60.dp).fillMaxSize()
     ) {
-        Text(text = "Logging Page", fontSize = 20.sp)
+        Text(text = "Logging Page", fontSize = 50.sp)
         Spacer(modifier = Modifier.padding(10.dp))
 
         if (!attempt.isNullOrEmpty()) {
-            Text(text = "Attempt Logs", fontSize = 15.sp)
+            Text(text = "Attempt Logs", fontSize = 30.sp)
             Spacer(modifier = Modifier.padding(10.dp))
 
             LazyColumn(
-                modifier = Modifier.fillMaxWidth().padding(30.dp)
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 items(attempt) { attempt ->
-                    Text(text = "Sequence Length: ${attempt.sequenceLength}")
-                    Text(text = "User Response: ${attempt.response}")
-                    Text(text = "Target Sequence: ${attempt.targetSequence}")
-                    Text(text = "Is Correct: ${attempt.isCorrect}")
+                    Text(text = "Sequence Length: ${attempt.sequenceLength}", fontSize = 30.sp)
+                    Text(text = "User Response: ${attempt.response}", fontSize = 30.sp,lineHeight = 40.sp)
+                    Text(text = "Target Sequence: ${attempt.targetSequence}", fontSize = 30.sp,lineHeight = 40.sp)
+                    Text(text = "Is Correct: ${attempt.isCorrect}", fontSize = 30.sp)
                 }
             }
         } else {
-            Text(text = "No logging data available.")
+            Text(text = "No logging data available.", fontSize = 30.sp)
         }
         Spacer(modifier = Modifier.padding(10.dp))
         Button(onClick = {onSelectedOption(1) }){
