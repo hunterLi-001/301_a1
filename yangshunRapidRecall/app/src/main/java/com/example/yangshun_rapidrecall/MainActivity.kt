@@ -61,7 +61,7 @@ data class Attempt(
     var timestamp: Date = Date()
 )
 
-//set a control to shift from starting info page to actual decision-making app interface
+//set a control to shift from starting info page to actual app interface
 @Composable
 fun MainControl(modifier: Modifier = Modifier) {
     //two stages: starting page or app interface
@@ -101,16 +101,17 @@ fun MainControl(modifier: Modifier = Modifier) {
             correctAttempts = correctAttempts,
             modifier = Modifier)
     }
-
 //fun MainControl
 }
 
+// main app calls the control
 @Composable
 fun RapidRecallApp() {
     MainControl()
 }
 
 // menu screen
+// display the welcome massage and 3 buttons
 @Composable
 fun MenuScreen(
     onSelectedOption: (Int) -> Unit,
@@ -162,13 +163,16 @@ fun MenuScreen(
     }
 }
 
-
+// to control the game stages
 enum class GameStage {
     input,
     display,
     recall
 }
 
+// first let user input the sequence length
+// then display the target sequence
+// then recall the sequence
 @Composable
 fun GameScreen(
     onAttemptEnd: (Attempt) -> Unit,
@@ -223,7 +227,7 @@ fun GameScreen(
                 Text("Start Game")
             }
         } else if (gameStage == GameStage.display) {
-            Text(text = "Display the target sequence", fontSize = 30.sp)
+            Text(text = "Display the target sequence", fontSize = 20.sp)
             Spacer(modifier = Modifier.padding(10.dp))
 
             if (currentIndex < targetSequence.length) {
@@ -271,7 +275,6 @@ fun GameScreen(
                 Text("Submit")
             }
 
-
             Spacer(modifier = Modifier.padding(10.dp))
 
             Button(onClick = {onSelectedOption(1) }){
@@ -284,6 +287,8 @@ fun GameScreen(
 // Game screen
 }
 
+
+// display the results of the game
 @Composable
 fun ResultsScreen(
     attempt: Attempt?,
@@ -310,12 +315,11 @@ fun ResultsScreen(
             Text("Back to Menu")
         }
     }
-
-
-
 // results screen
 }
 
+
+// display the attempts of the game
 @Composable
 fun AttemptScreen(
     attempt: Attempt?,
@@ -342,10 +346,9 @@ fun AttemptScreen(
             Text("Back to Menu")
         }
     }
-
-
 }
 
+// display the logging of the game
 @Composable
 fun LoggingScreen(
     attempt: List<Attempt>?,
