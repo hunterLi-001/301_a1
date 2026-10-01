@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -201,6 +203,7 @@ fun GameScreen(
     ) {
         if (gameStage == GameStage.input) {
             Text(text = "New Game Setup", fontSize = 40.sp)
+            Text(text = "Enter the sequence length within 10 digits.", fontSize = 20.sp)
             Spacer(modifier = Modifier.padding(10.dp))
 
             OutlinedTextField(
@@ -301,19 +304,30 @@ fun ResultsScreen(
     ) {
         Text(text = "Results", fontSize = 60.sp)
         Spacer(modifier = Modifier.padding(10.dp))
-
-        if (attempt != null) {
-            Text(text = "Sequence Length: ${attempt.sequenceLength}", fontSize = 30.sp)
-            Text(text = "User Response: ${attempt.response}", fontSize = 30.sp,lineHeight = 40.sp)
-            Text(text = "Target Sequence: ${attempt.targetSequence}", fontSize = 30.sp,lineHeight = 40.sp)
-            Text(text = "Is Correct: ${attempt.isCorrect}", fontSize = 30.sp)
-        } else {
-            Text(text = "No attempt data available.", fontSize = 30.sp)
+        Column(modifier = Modifier.weight(1f)) {
+            if (attempt != null) {
+                Text(text = "Sequence Length: ${attempt.sequenceLength}", fontSize = 30.sp)
+                Text(
+                    text = "User Response: ${attempt.response}",
+                    fontSize = 30.sp,
+                    lineHeight = 40.sp
+                )
+                Text(
+                    text = "Target Sequence: ${attempt.targetSequence}",
+                    fontSize = 30.sp,
+                    lineHeight = 40.sp
+                )
+                Text(text = "Is Correct: ${attempt.isCorrect}", fontSize = 30.sp)
+            } else {
+                Text(text = "No attempt data available.", fontSize = 30.sp)
+            }
         }
-        Spacer(modifier = Modifier.padding(10.dp))
-        Button(onClick = {onSelectedOption(1) }){
-            Text("Back to Menu")
+        Column(modifier = Modifier.weight(0.2f)){
+            Button(onClick = {onSelectedOption(1) }) {
+                Text("Back to Menu")
+            }
         }
+    // column
     }
 // results screen
 }
@@ -333,18 +347,24 @@ fun AttemptScreen(
     ) {
         Text(text = "Summary", fontSize = 60.sp)
         Spacer(modifier = Modifier.padding(10.dp))
-
+        Column(modifier = Modifier.weight(1f)) {
         if (attempt != null) {
             Text(text = "No. of Attempts: ${totalAttempts}", fontSize = 30.sp)
             Text(text = "No. of Correct Attempts: ${correctAttempts}", fontSize = 30.sp)
-            Text(text = "Overall Accuracy: ${correctAttempts.toFloat() / totalAttempts.toFloat() * 100}%", fontSize = 30.sp)
+            Text(
+                text = "Overall Accuracy: ${correctAttempts.toFloat() / totalAttempts.toFloat() * 100}%",
+                fontSize = 30.sp
+            )
         } else {
             Text(text = "No summary data available.", fontSize = 30.sp)
         }
-        Spacer(modifier = Modifier.padding(10.dp))
-        Button(onClick = {onSelectedOption(1) }){
-            Text("Back to Menu")
+    }
+        Column(modifier = Modifier.weight(0.2f)){
+            Button(onClick = {onSelectedOption(1) }) {
+                Text("Back to Menu")
+            }
         }
+    //column
     }
 }
 
@@ -358,35 +378,52 @@ fun LoggingScreen(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.padding(top = 60.dp).fillMaxSize()
+        modifier = modifier.padding(top = 60.dp).fillMaxWidth()
     ) {
         Text(text = "Logging Page", fontSize = 50.sp)
         Spacer(modifier = Modifier.padding(10.dp))
 
-        if (!attempt.isNullOrEmpty()) {
-            Text(text = "Attempt Logs", fontSize = 30.sp)
-            Spacer(modifier = Modifier.padding(10.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            if (!attempt.isNullOrEmpty()) {
+                Text(text = "Attempt Logs", fontSize = 30.sp)
+                Spacer(modifier = Modifier.padding(10.dp))
 
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                items(attempt) { attempt ->
-                    Text(text = "Sequence Length: ${attempt.sequenceLength}", fontSize = 30.sp)
-                    Text(text = "User Response: ${attempt.response}", fontSize = 30.sp,lineHeight = 40.sp)
-                    Text(text = "Target Sequence: ${attempt.targetSequence}", fontSize = 30.sp,lineHeight = 40.sp)
-                    Text(text = "Is Correct: ${attempt.isCorrect}", fontSize = 30.sp)
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 30.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    items(attempt) { attempt ->
+                        Text(text = "Sequence Length: ${attempt.sequenceLength}", fontSize = 30.sp)
+                        Text(
+                            text = "User Response: ${attempt.response}",
+                            fontSize = 30.sp,
+                            lineHeight = 40.sp
+                        )
+                        Text(
+                            text = "Target Sequence: ${attempt.targetSequence}",
+                            fontSize = 30.sp,
+                            lineHeight = 40.sp
+                        )
+                        Text(text = "Is Correct: ${attempt.isCorrect}", fontSize = 30.sp)
+                        Text(text = "Timestamp: ${attempt.timestamp}", fontSize = 30.sp, lineHeight = 40.sp)
+                        Spacer(modifier = Modifier.padding(10.dp))
+                    }
                 }
+
+            } else {
+                Text(text = "No logging data available.", fontSize = 30.sp)
             }
-        } else {
-            Text(text = "No logging data available.", fontSize = 30.sp)
         }
-        Spacer(modifier = Modifier.padding(10.dp))
-        Button(onClick = {onSelectedOption(1) }){
-            Text("Back to Menu")
+        Column(modifier = Modifier.weight(0.2f)){
+            Button(onClick = {onSelectedOption(1) }) {
+                Text("Back to Menu")
+            }
         }
-    // column
+
+// column
     }
+
+
 // logging screen
 }
 
